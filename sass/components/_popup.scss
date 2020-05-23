@@ -1,0 +1,141 @@
+.popup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 100%;
+    background-color: rgba($color-black, .8);
+    z-index: 9999;
+
+    opacity: 0;
+    visibility: hidden;
+    transition: all .3s;
+
+    /*
+        GRACEFUL DEGRADATION
+
+        Далее мы использует @support, чтобы сказать браузеру:
+        Если браузер поддерживает -webkit-backdrop-filter или просто backdrop-filter, то применять правила, которые идут в {}.
+        Если браузер не поддерживает эти свойства, то будут применены свойства, описанные выше
+    */
+    @supports (-webkit-backdrop-filter: blur(10px)) or (backdrop-filter: blur(10px)) {
+        -webkit-backdrop-filter: blur(10px); // Фильтр для размытия элементов, которые находятся позади элементов с классом target
+        backdrop-filter: blur(10px); // Фильтр для размытия элементов, которые находятся позади элементов с классом target
+        background-color: rgba($color-black, .3);
+    }
+
+
+
+    &__content {
+        @include center-hor-vert;
+
+        width: 75%;
+        background-color: $color-white;
+        box-shadow: 0 2rem 4rem rgba($color-black, .2);
+        border-radius: 3px;
+        overflow: hidden;       
+        display: table;
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(.25); // мы повторяем здесь запись translate(-50%, -50%), которая содержится в чуть выше в миксине center-hor-vert, так как к элементу будет применено только 1 свойство transform. Видимо то, которое написан позже. А мы хотим добавить transform:scale(.5s) для улучшения эффекта появления всплывающего окна)
+
+        transition: all .5s .2s;
+    }
+
+    &__left {
+        width: 33.3333333%;
+        display: table-cell;
+        vertical-align: middle;
+
+
+     
+        @include respond(tab-port) {
+            display: block;
+            overflow: hidden;
+            width: 100%;            
+        }
+    }
+
+    &__right {
+        width: 66.6666667%;
+        padding: 3rem 5rem;
+        display: table-cell;
+        vertical-align: middle;
+
+        width: 49%;
+
+        @include respond(tab-port) {
+            display: block;
+            width: 100%;
+            text-align: center;
+        }
+    }
+
+    &__img {
+        display: block;
+        width: 100%;
+
+        @include respond(tab-port) {
+            display: inline-block;
+            width: 50%;
+            float: left;
+            object-fit: cover;
+        }
+    }
+
+    &__text {
+        font-size: 1.4rem;
+        margin-bottom: 4rem;
+
+        -moz-column-count: 2;
+        -moz-column-count: 2;
+        -moz-column-gap: 4rem;
+
+        column-count: 2;
+        column-gap: 4rem; // default column-gap: 1em. В данном случае 1em=1.4rem=14px
+        column-rule: 1px solid $color-grey-light-2;
+
+        -moz-hyphens: auto;
+        -ms-hyphens: auto;
+        -webkit-hyphens: auto;
+        hyphens: auto; // default hyphens: none; Chrome поддерживает значение auto тольео на платфомах Mac и 
+
+        @include respond(tab-port) {
+            -moz-column-count: 1;
+            -moz-column-count: 1;
+    
+            column-count: 1;
+        }
+    }
+
+    // Open states - состояние "Открыто"
+    &:target {
+        opacity: 1;
+        visibility: visible;
+    }
+
+    &:target &__content {
+        opacity: 1;
+        transform: translate(-50%,-50%) scale(1);
+    }
+
+    &__close {
+
+        &:link,
+        &:visited {
+            color: $color-grey-dark;
+            position: absolute;
+            top: 2.5rem;
+            right: 2.5rem;
+            font-size: 3rem;
+            text-decoration: none;
+            display: inline-block;
+            transition: all.2s;
+            line-height: 1rem;
+        }
+
+        &:hover {
+            color: $color-primary;
+        }
+    }
+
+}
